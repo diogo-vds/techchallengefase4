@@ -19,7 +19,6 @@ public class AvaliacaoService {
     }
 
     public void salvar(AvaliacaoRequest dto) {
-        // Lógica para salvar a avaliação no banco de dados
-        // Por exemplo, você pode usar um repositório para persistir os dados
+        //TODO: Implementar a lógica de salvar a avaliação no banco de dados
     }
 }
