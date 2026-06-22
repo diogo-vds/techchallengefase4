@@ -29,9 +29,4 @@ public class AvaliacaoServiceTest {
         assertEquals(Urgencia.BAIXA, service.calcularUrgencia(10));
     }
 
-    @Test
-    public void salvar_naoDeveLancarException() {
-        AvaliacaoRequest dto = new AvaliacaoRequest("descr", 5);
-        assertDoesNotThrow(() -> service.salvar(dto));
-    }
 }

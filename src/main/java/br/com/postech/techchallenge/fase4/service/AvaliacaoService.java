@@ -27,7 +27,7 @@ public class AvaliacaoService {
         return repository.salvar(avaliacao);
     }
 
-    private Urgencia calcularUrgencia(Integer nota) {
+    public Urgencia calcularUrgencia(Integer nota) {
 
         if (nota <= 3) {
             return Urgencia.ALTA;
