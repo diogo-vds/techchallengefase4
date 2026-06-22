@@ -1,5 +1,8 @@
 package br.com.postech.techchallenge.fase4.repository;
 
-public class AvaliacaoRepository {
-    
+import br.com.postech.techchallenge.fase4.model.Avaliacao;
+
+public interface AvaliacaoRepository {
+
+    Avaliacao salvar(Avaliacao avaliacao);
 }
