@@ -52,7 +52,7 @@ public class JsonAvaliacaoRepository implements AvaliacaoRepository {
 
             Path tmp = Files.createTempFile(parentPath, "feedbacks", ".json");
             mapper.writerWithDefaultPrettyPrinter().writeValue(tmp.toFile(), avaliacoes);
-            Files.move(tmp, targetPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            Files.move(tmp, targetPath, StandardCopyOption.REPLACE_EXISTING);
 
             return avaliacao;
 
