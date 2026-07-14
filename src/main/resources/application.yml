@@ -1,0 +1,12 @@
+aws:
+  region: us-east-1
+  dynamodb:
+    table-name: Feedbacks
+  ses:
+    from-email: reports@feedback-system.com
+    to-email: admin@feedback-system.com
+
+logging:
+  level:
+    com.feedback.report: DEBUG
+    software.amazon.awssdk: INFO
