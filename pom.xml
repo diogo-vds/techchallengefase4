@@ -7,21 +7,27 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Azure Java Functions</name>
+    <name>AWS Lambda Avaliacao Function</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
-        <azure.functions.maven.plugin.version>1.40.0</azure.functions.maven.plugin.version>
-        <azure.functions.java.library.version>3.2.2</azure.functions.java.library.version>
-        <functionAppName>avaliacao-function</functionAppName>
+        <aws.lambda.core.version>1.2.3</aws.lambda.core.version>
+        <aws.lambda.java.events.version>3.11.4</aws.lambda.java.events.version>
+        <spring.amqp.version>3.1.6</spring.amqp.version>
+        <jackson.version>2.15.2</jackson.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.microsoft.azure.functions</groupId>
-            <artifactId>azure-functions-java-library</artifactId>
-            <version>${azure.functions.java.library.version}</version>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-core</artifactId>
+            <version>${aws.lambda.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-events</artifactId>
+            <version>${aws.lambda.java.events.version}</version>
         </dependency>
         <!-- Test -->
         <dependency>
@@ -45,7 +51,18 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.15.2</version>
+            <version>${jackson.version}</version>
+        </dependency>
+        <!-- RabbitMQ Dependencies -->
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-rabbit</artifactId>
+            <version>${spring.amqp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>5.21.0</version>
         </dependency>
     </dependencies>
 
@@ -82,58 +99,21 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.microsoft.azure</groupId>
-                <artifactId>azure-functions-maven-plugin</artifactId>
-                <version>${azure.functions.maven.plugin.version}</version>
-                <configuration>
-                    <!-- function app name -->
-                    <appName>${functionAppName}</appName>
-                    <!-- function app resource group -->
-                    <resourceGroup>java-functions-group</resourceGroup>
-                    <!-- function app region-->
-                    <!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details#supported-regions for all valid values -->
-                    <region>westus</region>
-                    <!-- function app service plan name -->
-                    <appServicePlanName>java-functions-app-service-plan</appServicePlanName>
-                    <!-- function pricingTier, default to be consumption if not specified -->
-                    <!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details#supported-pricing-tiers for all valid values -->
-                    <!-- <pricingTier></pricingTier> -->
-                    <!-- Whether to disable application insights, default is false -->
-                    <!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details for all valid configurations for application insights-->
-                    <!-- <disableAppInsights></disableAppInsights> -->
-                    <runtime>
-                        <!-- runtime os, could be windows, linux (default) or docker-->
-                        <!-- <os>linux</os> -->
-                        <!-- runtime Java version, could be 8, 11, 17, 21 (default) -->
-                        <javaVersion>21</javaVersion>
-                    </runtime>
-                    <appSettings>
-                        <property>
-                            <name>FUNCTIONS_EXTENSION_VERSION</name>
-                            <value>~4</value>
-                        </property>
-                    </appSettings>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
-                        <id>package-functions</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>package</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <finalName>${project.artifactId}</finalName>
+                        </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <!--Remove obj folder generated by .NET SDK in maven clean-->
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>obj</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
             </plugin>
         </plugins>
     </build>

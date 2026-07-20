@@ -1,0 +1,33 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /avaliacao",
+  "rawPath": "/avaliacao",
+  "rawQueryString": "",
+  "headers": {
+    "accept": "*/*",
+    "content-length": "48",
+    "content-type": "application/json",
+    "host": "localhost:3000",
+    "user-agent": "curl/7.88.1"
+  },
+  "requestContext": {
+    "accountId": "123456789012",
+    "apiId": "r3pmxmnsak",
+    "domainName": "localhost:3000",
+    "domainPrefix": "r3pmxmnsak",
+    "http": {
+      "method": "POST",
+      "path": "/avaliacao",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "127.0.0.1",
+      "userAgent": "curl/7.88.1"
+    },
+    "requestId": "JKJaXmPsSwMESVw=",
+    "routeKey": "POST /avaliacao",
+    "stage": "$default",
+    "time": "19/Jul/2026:19:40:30 +0000",
+    "timeEpoch": 1658000430000
+  },
+  "body": "{\"descricao\":\"Excelente atendimento\",\"nota\":9}",
+  "isBase64Encoded": false
+}
