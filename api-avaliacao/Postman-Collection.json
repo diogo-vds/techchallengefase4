@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "avaliacao-rabbitmq-collection",
-    "name": "Avaliacao API - RabbitMQ",
-    "description": "Collection para testar a Lambda function com RabbitMQ",
+    "_postman_id": "avaliacao-sqs-collection",
+    "name": "Avaliacao API - DynamoDB e SQS",
+    "description": "Collection para testar a Lambda function com DynamoDB e SQS",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [

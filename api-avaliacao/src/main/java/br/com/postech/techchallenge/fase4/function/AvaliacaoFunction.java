@@ -46,10 +46,11 @@ public class AvaliacaoFunction implements RequestHandler<APIGatewayProxyRequestE
             context.getLogger().log(
                     String.format("Avaliação recebida com nota %d", dto.nota()));
 
-            avaliacaoService.salvar(dto);
+            var avaliacao = avaliacaoService.salvar(dto);
 
-            return createSuccessResponse(201, 
-                    Map.of("mensagem", "Avaliação registrada com sucesso"));
+            return createSuccessResponse(202,
+                    Map.of("mensagem", "Avaliação recebida para processamento",
+                            "id", avaliacao.getId()));
 
         } catch (JsonProcessingException e) {
             context.getLogger().log("JSON inválido: " + e.getMessage());

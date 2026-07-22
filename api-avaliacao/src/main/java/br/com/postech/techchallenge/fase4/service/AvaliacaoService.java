@@ -3,14 +3,27 @@ package br.com.postech.techchallenge.fase4.service;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import br.com.postech.techchallenge.fase4.integration.RabbitMqPublisher;
+import br.com.postech.techchallenge.fase4.integration.QueuePublisher;
+import br.com.postech.techchallenge.fase4.integration.SqsPublisher;
 import br.com.postech.techchallenge.fase4.model.Avaliacao;
 import br.com.postech.techchallenge.fase4.model.AvaliacaoRequest;
 import br.com.postech.techchallenge.fase4.model.Urgencia;
+import br.com.postech.techchallenge.fase4.repository.AvaliacaoRepository;
+import br.com.postech.techchallenge.fase4.repository.DynamoDbAvaliacaoRepository;
 
 public class AvaliacaoService {
 
-    private final RabbitMqPublisher rabbitMqPublisher = new RabbitMqPublisher();
+    private final AvaliacaoRepository repository;
+    private final QueuePublisher queuePublisher;
+
+    public AvaliacaoService() {
+        this(new DynamoDbAvaliacaoRepository(), new SqsPublisher());
+    }
+
+    public AvaliacaoService(AvaliacaoRepository repository, QueuePublisher queuePublisher) {
+        this.repository = repository;
+        this.queuePublisher = queuePublisher;
+    }
 
     public Avaliacao salvar(AvaliacaoRequest dto) {
 
@@ -21,13 +34,12 @@ public class AvaliacaoService {
         avaliacao.setNota(dto.nota());
         avaliacao.setUrgencia(calcularUrgencia(dto.nota()));
         avaliacao.setDataEnvio(LocalDateTime.now());
+        repository.salvar(avaliacao);
 
         try {
-            // Publicar avaliação na fila RabbitMQ
-            rabbitMqPublisher.publicarAvaliacao(avaliacao);
-        } catch (Exception e) {
-            System.err.println("Erro ao publicar na fila: " + e.getMessage());
-            throw new RuntimeException("Erro ao salvar avaliação na fila RabbitMQ", e);
+            queuePublisher.publicar(avaliacao);
+        } catch (RuntimeException e) {
+            throw new IllegalStateException("Avaliacao persistida, mas nao publicada na SQS", e);
         }
 
         return avaliacao;

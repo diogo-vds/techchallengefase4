@@ -16,6 +16,7 @@
         <aws.lambda.java.events.version>3.11.4</aws.lambda.java.events.version>
         <spring.amqp.version>3.1.6</spring.amqp.version>
         <jackson.version>2.15.2</jackson.version>
+        <aws.sdk.version>2.25.60</aws.sdk.version>
     </properties>
 
     <dependencies>
@@ -53,16 +54,15 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        <!-- RabbitMQ Dependencies -->
         <dependency>
-            <groupId>org.springframework.amqp</groupId>
-            <artifactId>spring-rabbit</artifactId>
-            <version>${spring.amqp.version}</version>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>dynamodb</artifactId>
+            <version>${aws.sdk.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>5.21.0</version>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sqs</artifactId>
+            <version>${aws.sdk.version}</version>
         </dependency>
     </dependencies>
 

@@ -1,6 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: AWS Lambda function for Avaliacao processing
+Parameters:
+  DynamoDbEndpoint:
+    Type: String
+    Default: ''
+  SqsEndpoint:
+    Type: String
+    Default: ''
 Globals:
   Function:
     Timeout: 60
@@ -9,10 +16,14 @@ Globals:
     Environment:
       Variables:
         LOG_LEVEL: INFO
-        RABBITMQ_HOST: localhost
-        RABBITMQ_PORT: '5672'
-        RABBITMQ_USER: guest
-        RABBITMQ_PASSWORD: guest
+        DYNAMODB_TABLE:
+          Ref: AvaliacoesTable
+        SQS_QUEUE_URL:
+          Ref: AvaliacoesQueue
+        AWS_ENDPOINT_URL_DYNAMODB:
+          Ref: DynamoDbEndpoint
+        AWS_ENDPOINT_URL_SQS:
+          Ref: SqsEndpoint
 Resources:
   AvaliacaoFunction:
     Type: AWS::Serverless::Function
@@ -25,6 +36,15 @@ Resources:
       - x86_64
       EphemeralStorage:
         Size: 512
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: AvaliacoesTable
+      - SQSSendMessagePolicy:
+          QueueName:
+            Fn::GetAtt:
+            - AvaliacoesQueue
+            - QueueName
       Events:
         ApiEvent:
           Type: Api
@@ -35,6 +55,31 @@ Resources:
             Method: POST
     Metadata:
       SamResourceId: AvaliacaoFunction
+  AvaliacoesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: avaliacoes
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+  AvaliacoesDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: avaliacoes-dlq
+  AvaliacoesQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: avaliacoes
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::GetAtt:
+          - AvaliacoesDeadLetterQueue
+          - Arn
+        maxReceiveCount: 3
   AvaliacaoApi:
     Type: AWS::Serverless::Api
     Properties:

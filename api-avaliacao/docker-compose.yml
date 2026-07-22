@@ -1,30 +1,21 @@
-version: '3.8'
-
 services:
-  rabbitmq:
-    image: rabbitmq:4.0-management-alpine
-    container_name: avaliacao-rabbitmq
+  localstack:
+    image: localstack/localstack:4.0.3
+    container_name: avaliacao-localstack
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-      RABBITMQ_DEFAULT_VHOST: /
+      SERVICES: dynamodb,sqs
+      AWS_DEFAULT_REGION: us-east-1
+      DEBUG: ${LOCALSTACK_DEBUG:-0}
     ports:
-      - "5672:5672"      # AMQP port
-      - "15672:15672"    # Management UI
+      - "4566:4566"
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - localstack_data:/var/lib/localstack
+      - ./localstack/init:/etc/localstack/init/ready.d:ro
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 10s
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 5s
       timeout: 5s
-      retries: 5
-    networks:
-      - avaliacao-network
+      retries: 20
 
 volumes:
-  rabbitmq_data:
-
-networks:
-  avaliacao-network:
-    driver: bridge
+  localstack_data:

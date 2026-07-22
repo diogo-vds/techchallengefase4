@@ -66,4 +66,5 @@ public class Avaliacao {
     public void setDataEnvio(LocalDateTime dataEnvio) {
         this.dataEnvio = dataEnvio;
     }
+
 }
