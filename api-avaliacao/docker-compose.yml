@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:4.0-management-alpine
+    container_name: avaliacao-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: /
+    ports:
+      - "5672:5672"      # AMQP port
+      - "15672:15672"    # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - avaliacao-network
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  avaliacao-network:
+    driver: bridge

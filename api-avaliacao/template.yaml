@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Lambda function for Avaliacao processing
+
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 512
+    Runtime: java21
+    Environment:
+      Variables:
+        LOG_LEVEL: INFO
+        RABBITMQ_HOST: localhost
+        RABBITMQ_PORT: '5672'
+        RABBITMQ_USER: guest
+        RABBITMQ_PASSWORD: guest
+
+Resources:
+  AvaliacaoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: avaliacao-function
+      CodeUri: .
+      Handler: br.com.postech.techchallenge.fase4.function.AvaliacaoFunction::handleRequest
+      Description: Processa novas avaliações e calcula urgência
+      Architectures:
+        - x86_64
+      EphemeralStorage:
+        Size: 512
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AvaliacaoApi
+            Path: /avaliacao
+            Method: POST
+
+  AvaliacaoApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: dev
+      Name: AvaliacaoAPI
+      TracingEnabled: true
+      MethodSettings:
+        - ResourcePath: '/**'
+          HttpMethod: '*'
+          LoggingLevel: INFO
+          DataTraceEnabled: true
+          MetricsEnabled: true
+
+  AvaliacaoFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${AvaliacaoFunction}'
+      RetentionInDays: 7
+
+Outputs:
+  AvaliacaoFunctionArn:
+    Description: ARN da Lambda Function
+    Value: !GetAtt AvaliacaoFunction.Arn
+    Export:
+      Name: AvaliacaoFunctionArn
+
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub 'https://${AvaliacaoApi}.execute-api.${AWS::Region}.amazonaws.com/dev/'
+    Export:
+      Name: AvaliacaoApiEndpoint

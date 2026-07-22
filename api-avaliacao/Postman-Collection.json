@@ -1,0 +1,130 @@
+{
+  "info": {
+    "_postman_id": "avaliacao-rabbitmq-collection",
+    "name": "Avaliacao API - RabbitMQ",
+    "description": "Collection para testar a Lambda function com RabbitMQ",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Avaliacao - Nota Alta",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"descricao\":\"Excelente trabalho realizado com excelência\",\"nota\":9}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:3000/avaliacao",
+          "protocol": "http",
+          "host": ["127", "0", "0", "1"],
+          "port": "3000",
+          "path": ["avaliacao"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Avaliacao - Nota Media",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"descricao\":\"Trabalho realizável com pontos de melhoria\",\"nota\":5}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:3000/avaliacao",
+          "protocol": "http",
+          "host": ["127", "0", "0", "1"],
+          "port": "3000",
+          "path": ["avaliacao"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Avaliacao - Nota Baixa",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"descricao\":\"Trabalho com muitos problemas e necessita revisão urgente\",\"nota\":2}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:3000/avaliacao",
+          "protocol": "http",
+          "host": ["127", "0", "0", "1"],
+          "port": "3000",
+          "path": ["avaliacao"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Avaliacao - Validação: Descricao Vazia",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"descricao\":\"\",\"nota\":5}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:3000/avaliacao",
+          "protocol": "http",
+          "host": ["127", "0", "0", "1"],
+          "port": "3000",
+          "path": ["avaliacao"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Avaliacao - Validação: Nota Inválida",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"descricao\":\"Teste\",\"nota\":15}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:3000/avaliacao",
+          "protocol": "http",
+          "host": ["127", "0", "0", "1"],
+          "port": "3000",
+          "path": ["avaliacao"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
