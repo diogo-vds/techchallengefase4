@@ -1,0 +1,10 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "Sns": {
+        "Message": "{\"id\":1,\"descricao\":\"Excelente atendimento\",\"nota\":5,\"urgencia\":\"URGENTE\",\"dataCadastro\":\"2026-07-20T20:00\"}"
+      }
+    }
+  ]
+}
