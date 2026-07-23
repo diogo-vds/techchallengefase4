@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: relatorios-service
+  jackson:
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+
+aws:
+  region:
+  dynamodb:
+    table-name: relatorios
+    endpoint: ${DYNAMODB_ENDPOINT:}  # Opcional para desenvolvimento local
+
+logging:
+  level:
+    com.relatorios: DEBUG
+    software.amazon.awssdk: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  info:
+    env:
+      enabled: true
+
+server:
+  port: 8081
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    doc-expansion: none
