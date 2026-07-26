@@ -7,6 +7,6 @@ architecture = "x86_64"
 handler = "br.com.postech.techchallenge.fase4.function.AvaliacaoFunction::handleRequest"
 manifest_hash = ""
 packagetype = "Zip"
-functions = ["AvaliacaoFunction"]
+functions = ["AvaliacaoFunction", "UsuarioFunction"]
 
 [layer_build_definitions]

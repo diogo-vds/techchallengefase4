@@ -18,6 +18,8 @@ Globals:
         LOG_LEVEL: INFO
         DYNAMODB_TABLE:
           Ref: AvaliacoesTable
+        USUARIOS_TABLE:
+          Ref: UsuariosTable
         SQS_QUEUE_URL:
           Ref: AvaliacoesQueue
         AWS_ENDPOINT_URL_DYNAMODB:
@@ -40,6 +42,9 @@ Resources:
       - DynamoDBCrudPolicy:
           TableName:
             Ref: AvaliacoesTable
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: UsuariosTable
       - SQSSendMessagePolicy:
           QueueName:
             Fn::GetAtt:
@@ -55,6 +60,29 @@ Resources:
             Method: POST
     Metadata:
       SamResourceId: AvaliacaoFunction
+  UsuarioFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: usuario-function
+      CodeUri: UsuarioFunction
+      Handler: br.com.postech.techchallenge.fase4.function.UsuarioFunction::handleRequest
+      Description: Cadastra estudantes para autenticacao Basic
+      Architectures:
+      - x86_64
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UsuariosTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: AvaliacaoApi
+            Path: /usuarios
+            Method: POST
+    Metadata:
+      SamResourceId: UsuarioFunction
   AvaliacoesTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -65,6 +93,17 @@ Resources:
         AttributeType: S
       KeySchema:
       - AttributeName: id
+        KeyType: HASH
+  UsuariosTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: usuarios
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: email
+        AttributeType: S
+      KeySchema:
+      - AttributeName: email
         KeyType: HASH
   AvaliacoesDeadLetterQueue:
     Type: AWS::SQS::Queue

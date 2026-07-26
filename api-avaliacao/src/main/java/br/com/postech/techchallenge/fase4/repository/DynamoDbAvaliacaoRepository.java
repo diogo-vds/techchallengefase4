@@ -27,6 +27,8 @@ public class DynamoDbAvaliacaoRepository implements AvaliacaoRepository {
     public Avaliacao salvar(Avaliacao avaliacao) {
         Map<String, AttributeValue> item = new HashMap<>();
         item.put("id", string(avaliacao.getId()));
+        item.put("estudanteId", string(avaliacao.getEstudanteId()));
+        item.put("estudanteEmail", string(avaliacao.getEstudanteEmail()));
         item.put("descricao", string(avaliacao.getDescricao()));
         item.put("nota", AttributeValue.builder().n(avaliacao.getNota().toString()).build());
         item.put("urgencia", string(avaliacao.getUrgencia().name()));

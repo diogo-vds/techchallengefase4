@@ -3,6 +3,8 @@ package br.com.postech.techchallenge.fase4;
 import br.com.postech.techchallenge.fase4.model.AvaliacaoRequest;
 import br.com.postech.techchallenge.fase4.model.Avaliacao;
 import br.com.postech.techchallenge.fase4.model.Urgencia;
+import br.com.postech.techchallenge.fase4.model.Perfil;
+import br.com.postech.techchallenge.fase4.model.Usuario;
 import br.com.postech.techchallenge.fase4.integration.QueuePublisher;
 import br.com.postech.techchallenge.fase4.repository.AvaliacaoRepository;
 import br.com.postech.techchallenge.fase4.service.AvaliacaoService;
@@ -18,6 +20,7 @@ public class AvaliacaoServiceTest {
     private final InMemoryRepository repository = new InMemoryRepository();
     private final RecordingPublisher publisher = new RecordingPublisher();
     private final AvaliacaoService service = new AvaliacaoService(repository, publisher);
+    private final Usuario estudante = estudante();
 
     @Test
     public void calcularUrgencia_deveRetornarAlta_paraNotasAte3() {
@@ -39,9 +42,12 @@ public class AvaliacaoServiceTest {
 
     @Test
     public void salvar_devePersistirAntesDePublicar() {
-        Avaliacao resultado = service.salvar(new AvaliacaoRequest("Atendimento demorado", 2));
+        Avaliacao resultado = service.salvar(
+                new AvaliacaoRequest("Atendimento demorado", 2), estudante);
 
         assertNotNull(resultado.getId());
+        assertEquals(estudante.getId(), resultado.getEstudanteId());
+        assertEquals(estudante.getEmail(), resultado.getEstudanteEmail());
         assertEquals(List.of("salvar", "publicar"), repository.eventos);
     }
 
@@ -50,8 +56,17 @@ public class AvaliacaoServiceTest {
         publisher.falhar = true;
 
         assertThrows(IllegalStateException.class,
-                () -> service.salvar(new AvaliacaoRequest("Teste de falha", 5)));
+                () -> service.salvar(new AvaliacaoRequest("Teste de falha", 5), estudante));
         assertEquals(List.of("salvar", "publicar"), repository.eventos);
+    }
+
+    private Usuario estudante() {
+        Usuario usuario = new Usuario();
+        usuario.setId("estudante-1");
+        usuario.setNome("Estudante");
+        usuario.setEmail("estudante@example.com");
+        usuario.setPerfil(Perfil.ESTUDANTE);
+        return usuario;
     }
 
     private class InMemoryRepository implements AvaliacaoRepository {

@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 public class Avaliacao {
 
     private String id;
+    private String estudanteId;
+    private String estudanteEmail;
     private String descricao;
     private Integer nota;
     private Urgencia urgencia;
@@ -33,6 +35,22 @@ public class Avaliacao {
 
     public String getDescricao() {
         return descricao;
+    }
+
+    public String getEstudanteId() {
+        return estudanteId;
+    }
+
+    public void setEstudanteId(String estudanteId) {
+        this.estudanteId = estudanteId;
+    }
+
+    public String getEstudanteEmail() {
+        return estudanteEmail;
+    }
+
+    public void setEstudanteEmail(String estudanteEmail) {
+        this.estudanteEmail = estudanteEmail;
     }
 
     public Integer getNota() {

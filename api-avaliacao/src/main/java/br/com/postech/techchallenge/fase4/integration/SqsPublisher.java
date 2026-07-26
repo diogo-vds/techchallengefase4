@@ -27,7 +27,7 @@ public class SqsPublisher implements QueuePublisher {
     public void publicar(Avaliacao avaliacao) {
         try {
             String body = mapper.writeValueAsString(new AvaliacaoRecebidaEvent(
-                    avaliacao.getId(), "AVALIACAO_RECEBIDA"));
+                    avaliacao.getId(), avaliacao.getEstudanteId(), "AVALIACAO_RECEBIDA"));
             client.sendMessage(SendMessageRequest.builder()
                     .queueUrl(queueUrl)
                     .messageBody(body)
@@ -45,6 +45,9 @@ public class SqsPublisher implements QueuePublisher {
         return value;
     }
 
-    private record AvaliacaoRecebidaEvent(String avaliacaoId, String evento) {
+    private record AvaliacaoRecebidaEvent(
+            String avaliacaoId,
+            String estudanteId,
+            String evento) {
     }
 }
