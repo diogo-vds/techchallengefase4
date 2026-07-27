@@ -1,36 +1,67 @@
 spring:
   application:
     name: relatorios-service
+  main:
+      allow-bean-definition-overriding: true
+
   jackson:
     time-zone: UTC
     serialization:
       write-dates-as-timestamps: false
 
-aws:
-  region:
-  dynamodb:
-    table-name: relatorios
-    endpoint: ${DYNAMODB_ENDPOINT:}  # Opcional para desenvolvimento local
+  # ==================== SECURITY CONFIGURATION ====================
+  security:
+    user:
+      name: ${SECURITY_ADMIN_USERNAME:admin}
+      password: ${SECURITY_ADMIN_PASSWORD:admin123}
+      roles: ADMIN
 
+# ==================== AWS CONFIGURATION ====================
+aws:
+  region: ${AWS_REGION:us-east-1}
+  dynamodb:
+    table-name: ${DYNAMODB_TABLE:relatorios}
+    endpoint: ${DYNAMODB_ENDPOINT:}  # Vazio para usar AWS real
+
+# ==================== CUSTOM SECURITY PROPERTIES ====================
+security:
+  admin-username: ${SECURITY_ADMIN_USERNAME:admin}
+  admin-password: ${SECURITY_ADMIN_PASSWORD:admin123}
+  user-username: ${SECURITY_USER_USERNAME:user}
+  user-password: ${SECURITY_USER_PASSWORD:user123}
+
+# ==================== LOGGING ====================
 logging:
   level:
-    com.relatorios: DEBUG
+    com.relatorios: ${LOG_LEVEL:DEBUG}
     software.amazon.awssdk: WARN
+    org.springframework.security: ${SECURITY_LOG_LEVEL:INFO}
+    org.springframework.security.web: ${SECURITY_LOG_LEVEL:INFO}
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
+# ==================== MANAGEMENT / ACTUATOR ====================
 management:
   endpoints:
     web:
       exposure:
         include: health,info,metrics
+      base-path: /actuator
   info:
     env:
       enabled: true
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
 
+# ==================== SERVER ====================
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
+  servlet:
+    context-path: ${CONTEXT_PATH:}
 
+# ==================== SPRINGDOC / SWAGGER ====================
 springdoc:
   api-docs:
     path: /v3/api-docs
@@ -39,3 +70,5 @@ springdoc:
     operations-sorter: method
     tags-sorter: alpha
     doc-expansion: none
+    try-it-out-enabled: true
+    persist-authorization: true
