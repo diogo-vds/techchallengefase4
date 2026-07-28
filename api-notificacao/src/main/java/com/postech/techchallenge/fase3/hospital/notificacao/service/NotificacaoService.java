@@ -10,6 +10,8 @@ import java.util.List;
 @Service
 public class NotificacaoService {
 
+    private static final String TITULO = "Nova avaliação crítica recebida";
+
     private final List<IEnvioNotificacaoService> envioNotificacaoServices;
 
     public NotificacaoService(List<IEnvioNotificacaoService> envioNotificacaoServices) {
@@ -17,21 +19,26 @@ public class NotificacaoService {
     }
 
     public void enviarLembrete(Notificacaorecord notificacaorecord) {
-        String assunto = "Envio de notificacao para: " + notificacaorecord.destinatario();
+        String assunto = "Envio de notificacao para: admin@fiap.com.br";
         
         String corpo = String.format(
-            "Olá %s,\n\nEsta é uma notificação referente à sua consulta agendada para %s.\n\nStatus: %s",
-            notificacaorecord.destinatario(),
-            notificacaorecord.assunto(),
-            notificacaorecord.corpo()
+                """
+                     %s\s
+                     Descrição:
+                     %s \
+                     Nota: %s
+                     Urgência: Alta
+                     Data: %S
+                    """,
+            TITULO,
+            notificacaorecord.descricao(),
+            notificacaorecord.nota(),
+            notificacaorecord.dataCadastro()
         );
 
         envioNotificacaoServices.stream().filter(service -> service.getTipoNotificacao().equals(TipoNotificacaoEnum.EMAIL.ordinal()))
                 .findFirst()
-                .ifPresent(service -> service.enviarNotificacao(new Notificacaorecord(
-                        notificacaorecord.destinatario(),
-                        assunto,
-                        corpo
-                )));
+                .ifPresent(service ->
+                        service.enviarNotificacao(notificacaorecord));
     }
 }

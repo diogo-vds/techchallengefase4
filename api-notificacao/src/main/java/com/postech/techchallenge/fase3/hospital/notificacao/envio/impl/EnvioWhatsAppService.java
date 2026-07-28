@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 @Service
 public class EnvioWhatsAppService implements IEnvioNotificacaoService {
     private static final Logger logger = Logger.getLogger(EnvioWhatsAppService.class.getName());
+    private static final String ID_USUARIO = "123456789";
+    private static final String TITULO = "Nova avaliação crítica recebida";
 
     @Override
     public Integer getTipoNotificacao() {
@@ -19,9 +21,12 @@ public class EnvioWhatsAppService implements IEnvioNotificacaoService {
     @Override
     public void enviarNotificacao(Notificacaorecord notificacaorecord) {
         logger.info("**************************************************");
-        logger.info("ENVIANDO WHATSAPP PARA: " + notificacaorecord.destinatario());
-        logger.info("ASSUNTO: " + notificacaorecord.assunto());
-        logger.info("CORPO: " + notificacaorecord.corpo());
+        logger.info("ENVIANDO WHATSAPP PARA: " + ID_USUARIO);
+        logger.info("ASSUNTO: " + TITULO);
+        logger.info("Descrição:: " + notificacaorecord.descricao());
+        logger.info("Nota: " + notificacaorecord.nota());
+        logger.info("Urgência: Alta");
+        logger.info("Data: " + notificacaorecord.dataCadastro());
         logger.info("**************************************************");
     }
 }

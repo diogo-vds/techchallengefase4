@@ -1,7 +1,11 @@
 package com.postech.techchallenge.fase3.hospital.notificacao.dto;
 
+import java.time.LocalDateTime;
+
 public record Notificacaorecord(
-    String destinatario,
-    String assunto,
-    String corpo
+        Long id,
+        String descricao,
+        Integer nota,
+        String urgencia,
+        LocalDateTime dataCadastro
 ) {}

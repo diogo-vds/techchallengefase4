@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 public class EnvioEmailService implements IEnvioNotificacaoService {
 
     private static final Logger logger = Logger.getLogger(EnvioEmailService.class.getName());
+    private static final String TITULO = "Nova avaliação crítica recebida";
+    private static final String DESTINATARIO = "admin@fiap.com.br";
 
     @Override
     public Integer getTipoNotificacao() {
@@ -20,9 +22,12 @@ public class EnvioEmailService implements IEnvioNotificacaoService {
     @Override
     public void enviarNotificacao(Notificacaorecord notificacaorecord) {
         logger.info("**************************************************");
-        logger.info("ENVIANDO EMAIL PARA: " + notificacaorecord.destinatario());
-        logger.info("ASSUNTO: " + notificacaorecord.assunto());
-        logger.info("CORPO: " + notificacaorecord.corpo());
+        logger.info("ENVIANDO EMAIL PARA: " + DESTINATARIO);
+        logger.info("ASSUNTO: " + TITULO);
+        logger.info("Descrição:: " + notificacaorecord.descricao());
+        logger.info("Nota: " + notificacaorecord.nota());
+        logger.info("Urgência: Alta");
+        logger.info("Data: " + notificacaorecord.dataCadastro());
         logger.info("**************************************************");
     }
 }
