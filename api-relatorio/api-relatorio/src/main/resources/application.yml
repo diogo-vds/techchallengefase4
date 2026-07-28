@@ -20,7 +20,8 @@ spring:
 aws:
   region: ${AWS_REGION:us-east-1}
   dynamodb:
-    table-name: ${DYNAMODB_TABLE:relatorios}
+    table-name: ${DYNAMODB_TABLE:relatorio}
+    table-name-consolidado: ${DYNAMODB_TABLE_CONSOLIDADO:relatorios}
     endpoint: ${DYNAMODB_ENDPOINT:}  # Vazio para usar AWS real
 
 # ==================== CUSTOM SECURITY PROPERTIES ====================

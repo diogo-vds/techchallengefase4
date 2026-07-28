@@ -9,5 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "aws.dynamodb")
 public class DynamoDBProperties {
     private String tableName;
+    private String tableNameConsolidado;
     private String endpoint;
 }
