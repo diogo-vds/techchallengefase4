@@ -1,33 +1,123 @@
-resource "aws_sqs_queue" "fila-relatorios" {
-  name                      = "${var.project_name}-fila-relatorios"
-  visibility_timeout_seconds = 30
-  message_retention_seconds  = 86400
+#############################################
+# Fila de Notificações
+#############################################
 
-  tags = {
-    Project = var.project_name
-    Service = "relatorio"
-  }
+resource "aws_sqs_queue" "notificacao" {
+
+  name = local.fila_notificacao
+
 }
 
-resource "aws_sqs_queue" "fila-notificacoes" {
-  name                      = "${var.project_name}-fila-notificacoes"
-  visibility_timeout_seconds = 30
-  message_retention_seconds  = 86400
+#############################################
+# Fila de Relatórios
+#############################################
 
-  tags = {
-    Project = var.project_name
-    Service = "notificacao"
-  }
+resource "aws_sqs_queue" "relatorios" {
+
+  name = local.fila_relatorios
+
 }
 
-resource "aws_sns_topic_subscription" "relatorio_subscription" {
-  topic_arn = arn:aws:sns:us-east-1:303956760468:topic-avaliacoes
-  protocol  = "sqs"
-  endpoint  = aws_sqs_queue.relatorio_queue.arn
+#############################################
+# SNS -> Fila Notificação
+#############################################
+
+resource "aws_sns_topic_subscription" "notificacao" {
+
+  topic_arn = aws_sns_topic.avaliacoes.arn
+
+  protocol = "sqs"
+
+  endpoint = aws_sqs_queue.notificacao.arn
+
 }
 
-resource "aws_sns_topic_subscription" "avaliacao_subscription" {
-  topic_arn = arn:aws:sns:us-east-1:303956760468:topic-avaliacoes
-  protocol  = "sqs"
-  endpoint  = aws_sqs_queue.avaliacao_queue.arn
+#############################################
+# SNS -> Fila Relatórios
+#############################################
+
+resource "aws_sns_topic_subscription" "relatorios" {
+
+  topic_arn = aws_sns_topic.avaliacoes.arn
+
+  protocol = "sqs"
+
+  endpoint = aws_sqs_queue.relatorios.arn
+
+}
+
+resource "aws_sqs_queue_policy" "notificacao" {
+
+  queue_url = aws_sqs_queue.notificacao.id
+
+  policy = jsonencode({
+
+    Version = "2012-10-17"
+
+    Statement = [
+
+      {
+
+        Effect = "Allow"
+
+        Principal = "*"
+
+        Action = "sqs:SendMessage"
+
+        Resource = aws_sqs_queue.notificacao.arn
+
+        Condition = {
+
+          ArnEquals = {
+
+            "aws:SourceArn" = aws_sns_topic.avaliacoes.arn
+
+          }
+
+        }
+
+      }
+
+    ]
+
+  })
+
+}
+
+resource "aws_sqs_queue_policy" "relatorios" {
+
+  queue_url = aws_sqs_queue.relatorios.id
+
+  policy = jsonencode({
+
+    Version = "2012-10-17"
+
+    Statement = [
+
+      {
+
+        Effect = "Allow"
+
+        Principal = "*"
+
+        Action = "sqs:SendMessage"
+
+        Resource = aws_sqs_queue.relatorios.arn
+
+        Condition = {
+
+          ArnEquals = {
+
+            "aws:SourceArn" = aws_sns_topic.avaliacoes.arn
+
+          }
+
+        }
+
+      }
+
+    ]
+
+  })
+
 }

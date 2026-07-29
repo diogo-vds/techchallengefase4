@@ -1,8 +1,5 @@
-resource "aws_sns_topic" "topic-avaliacoes" {
-  name = "${var.project_name}-avaliacao-topic"
+resource "aws_sns_topic" "avaliacoes" {
 
-  tags = {
-    Project = var.project_name
-    Service = "topic-avaliacoes"
-  }
+  name = local.topic_avaliacoes
+
 }

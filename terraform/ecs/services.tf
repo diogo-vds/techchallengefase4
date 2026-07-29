@@ -1,15 +1,55 @@
-resource "aws_ecs_service" "api_service" {
-  name            = "${var.project_name}-api-service"
-  cluster         = aws_ecs_cluster.this.id
-  task_definition = aws_ecs_task_definition.api_task.arn
-  desired_count   = 2
-  launch_type     = "FARGATE"
+resource "aws_ecs_service" "api_avaliacoes" {
+
+  name = "api-avaliacoes-service"
+
+  cluster = aws_ecs_cluster.cluster.id
+
+  task_definition = aws_ecs_task_definition.api_avaliacoes.arn
+
+  desired_count = 1
+
+  launch_type = "FARGATE"
 
   network_configuration {
-    subnets         = var.private_subnets
-    security_groups = [var.api_security_group]
-    assign_public_ip = false
+
+    assign_public_ip = true
+
+    subnets = [
+      var.subnet_id
+    ]
+
+    security_groups = [
+      var.security_group
+    ]
+
   }
 
-  depends_on = [aws_ecs_cluster.this]
+}
+
+resource "aws_ecs_service" "api_relatorios" {
+
+  name = "api-relatorios-service"
+
+  cluster = aws_ecs_cluster.cluster.id
+
+  task_definition = aws_ecs_task_definition.api_relatorios.arn
+
+  desired_count = 1
+
+  launch_type = "FARGATE"
+
+  network_configuration {
+
+    assign_public_ip = true
+
+    subnets = [
+      var.subnet_id
+    ]
+
+    security_groups = [
+      var.security_group
+    ]
+
+  }
+
 }
