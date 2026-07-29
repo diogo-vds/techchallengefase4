@@ -116,7 +116,7 @@ public class RelatorioController {
     }
 
     @GetMapping("/semanal/{data}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Buscar relatório por semana",
             description = "Retorna um relatório específico baseado na semana fornecida")
     @ApiResponses(value = {
