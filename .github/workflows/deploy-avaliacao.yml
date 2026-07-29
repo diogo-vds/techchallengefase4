@@ -16,6 +16,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
       - name: Configurar AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -27,20 +33,27 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Dar permissão ao Maven Wrapper
+        run: chmod +x api-avaliacao/mvnw
+
+      - name: Compilar aplicação
+        working-directory: api-avaliacao
+        run: ./mvnw clean package -DskipTests
+
       - name: Build da imagem Docker
+        working-directory: api-avaliacao
         run: |
-          docker build -t api-avaliacoes ./api-avaliacao
+          docker build -t api-avaliacoes .
 
       - name: Tag da imagem
         run: |
           docker tag api-avaliacoes:latest \
-          303956760468.dkr.ecr.us-east-1.amazonaws.com/api-avaliacoes:latest
+            303956760468.dkr.ecr.us-east-1.amazonaws.com/api-avaliacoes:latest
 
       - name: Push da imagem
         run: |
           docker push \
-          303956760468.dkr.ecr.us-east-1.amazonaws.com/api-avaliacoes:latest
-
+            303956760468.dkr.ecr.us-east-1.amazonaws.com/api-avaliacoes:latest
 
       - name: Atualizar serviço ECS
         run: |
