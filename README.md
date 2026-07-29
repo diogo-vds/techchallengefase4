@@ -1,4 +1,17 @@
-# Tech Challenge - Plataforma de Feedback Acadêmico
+# Tech Challenge – Fase 4 – Plataforma de Avaliações Serverless
+
+Integrantes
+Diogo Santos RM369808
+Blenda de Assunção Cardoso Gaspar RM369857
+Luiz Alexandre de barros RM369159
+
+Repositório
+
+https://github.com/diogo-vds/techchallengefase4.git
+
+Vídeo de demonstração
+
+https://drive.google.com/file/d/1dfWiErqFTgE1cZK7InjzpwoPdGGps2Jr/view?usp=drive_link
 
 ## 1. Objetivo
 
@@ -90,6 +103,7 @@ Responsável por:
 
 receber avaliações dos alunos;
 validar os dados recebidos;
+verificar criticidade da avaliação
 persistir as avaliações no DynamoDB;
 publicar um evento no Amazon SNS.
 
@@ -146,7 +160,7 @@ Executada automaticamente pelo EventBridge Scheduler.
 Responsável por:
 
 * consultar os relatórios diários;
-* consolidar os dados do mês;
+* consolidar os dados da semana;
 * armazenar o relatório mensal.
 
 Exemplo:
