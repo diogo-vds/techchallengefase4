@@ -33,12 +33,10 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Dar permissão ao Maven Wrapper
-        run: chmod +x api-avaliacao/mvnw
-
-      - name: Compilar aplicação
-        working-directory: api-avaliacao
-        run: ./mvnw clean package -DskipTests
+      - name: Compilar projeto
+        run: |
+          cd api-avaliacao
+          mvn clean package -DskipTests
 
       - name: Build da imagem Docker
         working-directory: api-avaliacao
