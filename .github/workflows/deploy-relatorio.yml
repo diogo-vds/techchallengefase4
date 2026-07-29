@@ -1,0 +1,57 @@
+name: Deploy API Relatórios
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'api-relatorio/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login no Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Compilar projeto
+        working-directory: api-relatorio
+        run: mvn clean package -DskipTests
+
+      - name: Build da imagem Docker
+        run: docker build -t api-relatorios ./api-relatorio
+
+      - name: Tag da imagem
+        run: |
+          docker tag api-relatorios:latest \
+          303956760468.dkr.ecr.us-east-1.amazonaws.com/api-relatorios:latest
+
+      - name: Push da imagem
+        run: |
+          docker push \
+          303956760468.dkr.ecr.us-east-1.amazonaws.com/api-relatorios:latest
+
+      - name: Atualizar serviço ECS
+        run: |
+          aws ecs update-service \
+            --cluster techchallenge-cluster \
+            --service api-relatorios-service \
+            --force-new-deployment
