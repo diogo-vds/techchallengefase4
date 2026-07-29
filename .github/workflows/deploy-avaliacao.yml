@@ -41,6 +41,7 @@ jobs:
           docker push \
           303956760468.dkr.ecr.us-east-1.amazonaws.com/api-avaliacoes:latest
 
+
       - name: Atualizar serviço ECS
         run: |
           aws ecs update-service \
