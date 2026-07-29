@@ -1,7 +1,9 @@
-FROM public.ecr.aws/lambda/java:21
+FROM eclipse-temurin:21-jre
 
-# Copy Maven-built JAR
-COPY target/avaliacao-function.jar ${LAMBDA_TASK_ROOT}/
+WORKDIR /
 
-# Handler
-CMD [ "br.com.postech.techchallenge.fase4.function.AvaliacaoFunction::handleRequest" ]
+COPY target/*.jar avaliacao.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java","-jar","avaliacao.jar"]
