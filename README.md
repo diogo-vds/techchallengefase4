@@ -5,13 +5,13 @@ Diogo Santos RM369808
 Blenda de Assunção Cardoso Gaspar RM369857
 Luiz Alexandre de barros RM369159
 
-Repositório
+## Repositório
 
-https://github.com/diogo-vds/techchallengefase4.git
+https://github.com/diogo-vds/techchallengefase4
 
-Vídeo de demonstração
+## Vídeo de demonstração
 
-https://drive.google.com/file/d/1dfWiErqFTgE1cZK7InjzpwoPdGGps2Jr/view?usp=drive_link
+https://drive.google.com/file/d/1dfWiErqFTgE1cZK7InjzpwoPdGGps2Jr/view
 
 ## 1. Objetivo
 
@@ -22,7 +22,7 @@ A solução permite:
 * registrar avaliações dos alunos;
 * processar eventos de forma assíncrona;
 * notificar administradores quando avaliações críticas são recebidas;
-* gerar relatórios diários e mensais automaticamente;
+* gerar relatórios diários e semanais automaticamente;
 * armazenar os dados em banco NoSQL utilizando DynamoDB.
 
 ---
@@ -65,8 +65,8 @@ Lambda Gerar Relatórios
           │
           ▼
 DynamoDB (relatorios)
-PK = yyyy-MM
-```
+PK = yyyy-SWW
+
 
 ---
 
@@ -95,17 +95,17 @@ PK = yyyy-MM
 
 ---
 
-# Componentes da solução
+# 4. Componentes da solução
 
-API Avaliações
+## API Avaliações
 
 Responsável por:
 
-receber avaliações dos alunos;
-validar os dados recebidos;
-verificar criticidade da avaliação
-persistir as avaliações no DynamoDB;
-publicar um evento no Amazon SNS.
+- receber avaliações dos alunos;
+- validar os dados recebidos;
+- verificar a criticidade da avaliação;
+- persistir as avaliações no DynamoDB;
+- publicar um evento no Amazon SNS.
 
 A API é destinada aos alunos e seus endpoints são protegidos utilizando Spring Security, permitindo acesso apenas mediante autenticação.
 
@@ -159,9 +159,9 @@ Executada automaticamente pelo EventBridge Scheduler.
 
 Responsável por:
 
-* consultar os relatórios diários;
+* consultar as avaliações da semana;
 * consolidar os dados da semana;
-* armazenar o relatório mensal.
+* armazenar o relatório semanal.
 
 Exemplo:
 
@@ -173,7 +173,7 @@ PK = 2026-S07
 
 ## API Relatórios
 
-Disponibiliza consultas dos relatórios gerados.
+A API é destinada aos administradores e seus endpoints são protegidos utilizando Spring Security, permitindo acesso apenas mediante autenticação e autorização. Disponibiliza consultas dos relatórios gerados.
 
 Exemplo:
 
@@ -197,9 +197,13 @@ GET /relatorios/semanal/2026-07-28
 | CloudWatch            | Logs                           |
 | IAM                   | Controle de acesso             |
 
+Infraestrutura como Código
+
+A infraestrutura da solução foi modelada utilizando Terraform, permitindo o provisionamento automatizado dos principais recursos da AWS, como ECS, ECR, DynamoDB, SNS, SQS, EventBridge e IAM. Essa abordagem garante reprodutibilidade, versionamento da infraestrutura e facilidade de manutenção.
+
 ---
 
-# Monitoramento
+# 6. Monitoramento
 
 O monitoramento da solução é realizado através do Amazon CloudWatch.
 
@@ -220,6 +224,8 @@ Além dos logs, foram configurados CloudWatch Alarms para monitoramento de falha
 
 
 Esses alarmes permitem identificar rapidamente falhas no processamento assíncrono e facilitam a atuação corretiva durante a operação da solução.
+
+Além dos alarmes, foi criado um CloudWatch Dashboard para centralizar a visualização das principais métricas da solução, permitindo acompanhar a saúde das APIs, funções Lambda e filas SQS em um único painel.
 
 ---
 
@@ -319,6 +325,7 @@ docker build -t api-relatorios .
 
 ```
 docker run -p 8081:8081 api-relatorios
+```
 
 ---
 
@@ -332,5 +339,5 @@ A infraestrutura da aplicação pode ser provisionada utilizando Terraform.
 
 ## Conclusão
 
-A solução implementa uma arquitetura baseada em microsserviços e processamento assíncrono utilizando serviços gerenciados da AWS, explorando conceitos de computação em nuvem, Serverless, mensageria, infraestrutura como código e integração contínua. O uso combinado de ECS Fargate, Lambda, SNS, SQS, DynamoDB e EventBridge permite uma aplicação escalável, desacoplada e de fácil manutenção.
+A solução implementa uma arquitetura baseada em microsserviços e processamento assíncrono utilizando serviços gerenciados da AWS, explorando conceitos de computação em nuvem, Serverless, mensageria, infraestrutura como código e integração contínua. O uso combinado de ECS Fargate, AWS Lambda, Amazon SNS, Amazon SQS, Amazon DynamoDB e Amazon EventBridge permite uma aplicação escalável, desacoplada, resiliente e de fácil manutenção.
 
